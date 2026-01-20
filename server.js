@@ -195,12 +195,17 @@ app.post('/register', async (req, res) => {
             }
         });
 
-        res.redirect('/verify');
+        req.session.save((err) => {
+            if (err) console.error("Session save error:", err);
+            res.redirect('/verify');
+        });
     });
 });
 
 app.get('/verify', (req, res) => {
-    const email = req.session.pendingUser ? req.session.pendingUser.email : '';
+    if (!req.session.pendingUser) return res.redirect('/register');
+    
+    const email = req.session.pendingUser.email;
     const resent = req.query.resent === 'true';
     res.render('verify', { email: email, resent });
 });
@@ -317,7 +322,10 @@ app.post('/resend-code', (req, res) => {
         } else {
             console.log("✅ Resend code email sent successfully:", info.response);
         }
-        res.redirect('/verify?resent=true');
+        req.session.save((err) => {
+            if (err) console.error("Session save error:", err);
+            res.redirect('/verify?resent=true');
+        });
     });
 });
 
