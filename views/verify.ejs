@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - Love in Motion</title>
+    <!-- Fonts & Bootstrap -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #421746;
+            --accent-color: #a98213;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #431948, #000000b3), url('/images/bg.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        .card-header {
+            background: transparent;
+            border-bottom: none;
+            padding-top: 30px;
+            text-align: center;
+        }
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 5px;
+            font-weight: bold;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(66, 23, 70, 0.1);
+            border-color: var(--primary-color);
+            background-color: white;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #421746, #a98213);
+            border: none;
+            border-radius: 50px;
+            padding: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2e0f31, #8a680f);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 23, 70, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card p-4">
+                    <div class="card-header">
+                        <img src="/images/logo.png" alt="Logo" height="50" class="mb-2">
+                        <h2>Verify Email</h2>
+                        <p class="text-muted small">We sent a code to <strong><%= email %></strong></p>
+                    </div>
+                    <div class="card-body">
+                        <% if (typeof resent !== 'undefined' && resent) { %>
+                            <div class="alert alert-success text-center py-2 small mb-3 border-0 bg-success-subtle text-success fw-bold">
+                                ✅ New code sent! Check your inbox.
+                            </div>
+                        <% } %>
+                        <form action="/verify" method="POST">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold small text-muted d-block text-center">Enter Verification Code</label>
+                                <input type="text" name="code" class="form-control" placeholder="123456" maxlength="6" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary text-white">Verify Account</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-center bg-transparent border-0 mt-2">
+                        <form action="/resend-code" method="POST" class="mb-3">
+                            <span class="small text-muted">Didn't receive code?</span>
+                            <button type="submit" class="btn btn-link btn-sm text-decoration-none p-0 fw-bold" style="color: var(--accent-color);">Resend</button>
+                        </form>
+                        <a href="/register" class="small text-muted text-decoration-none">← Back to Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love in Motion - Couples Dance Competition</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        *{
+            padding:0;
+            margin:0;
+            box-sizing:border-box;
+        }
+        :root {
+            --primary-green: #008751; /* Nigeria Green */
+            --accent-gold: #FFD700;
+            --dark-text: #2d3436;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-text);
+        }
+        h1, h2, h3, h4, h5, .navbar-brand {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .navbar {
+            background-color: white !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
+        /* Hero Section with Pattern Overlay */
+        .hero-section {
+            background-color: var(--primary-green);
+            /* Gradient overlay with transparency + Background Image */
+            background: linear-gradient(135deg, #431948, #000000b3), url('/images/bg.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            color: white;
+            padding: 150px 0;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Subtle African Pattern SVG */
+             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            color: var(--primary-green);
+            font-weight: 800;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 40px;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 5px;
+            background: var(--accent-gold);
+            margin: 10px auto 0;
+            border-radius: 5px;
+        }
+        .card {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 135, 81, 0.15);
+        }
+        .btn-primary, .btn-success, .btn-warning, .btn-danger, .btn-secondary {
+            background: linear-gradient(to right, #421746, #a98213);
+            border: none;
+            color: white !important;
+        }
+        .btn-primary {
+            border-radius: 50px;
+            padding: 10px 30px;
+            font-weight: 600;
+        }
+        .btn-primary:hover, .btn-success:hover, .btn-warning:hover, .btn-danger:hover, .btn-secondary:hover {
+            background: linear-gradient(to right, #2e0f31, #8a680f);
+        }
+        .btn-outline-light:hover { color: var(--primary-green); background: white; }
+
+        @media (max-width: 768px) {
+            .navbar .btn {
+                padding: 3px 10px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light  sticky-top p-0 m-0 ">
+        <div class="container">
+            <a class="navbar-brand p-0" href="/">
+                 <img src="/images/logo.png" alt="Logo" height="100px" class="me-2">  
+                
+            </a>
+            <div class="d-flex">
+               <% if(user) { %>
+                    <% if (user.profile_pic) { %>
+                        <img src="/uploads/<%= user.profile_pic %>" alt="Profile" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white me-2" style="width: 30px; height: 30px; font-size: 0.8rem;">No Photo</div>
+                    <% } %>
+                    <span class="navbar-text text-dark me-3">Hello, <%= user.username %></span>
+                    <a href="/dashboard" class="btn btn-outline-dark me-2">Dashboard</a>
+                    <a href="/logout" class="btn btn-danger">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-outline-dark me-2">Login</a>
+                    <a href="/register" class="btn btn-primary">Register</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section text-center">
+        <div class="container position-relative">
+            <h1 class="hero-title">Love in Motion</h1>
+            <p class="lead fs-4 mb-4 text-light opacity-75">From First Step to Forever.<br>The Ultimate Couples Dance Competition.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#contestants" class="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill shadow">Vote Now</a>
+                <% if(!user) { %>
+                    <a href="/register" class="btn btn-outline-light btn-lg fw-bold px-5 py-3 rounded-pill shadow">Register Couple</a>
+                <% } %>
+            </div>
+        </div>
+    </header>
+
+    <!-- Competition Info Section -->
+    <section class="container my-5">
+        <div class="row g-4">
+            <!-- Prizes -->
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-top: 5px solid var(--accent-gold) !important;">
+                    <div class="card-body">
+                        <h3 class="h4 fw-bold mb-4 text-uppercase" style="color: var(--primary-green);">🏆 Prizes</h3>
+                        <div class="py-2">
+                            <h2 class="fw-bold text-dark display-4">₦500k</h2>
+                            <p class="text-muted fw-bold small">GRAND PRIZE + TROPHY</p>
+                        </div>
+                        <hr class="opacity-25">
+                        <ul class="list-unstyled text-start mx-auto small" style="max-width: 200px;">
+                            <li class="mb-2 d-flex justify-content-between"><span>🥈 2nd Place:</span> <strong>₦100k</strong></li>
+                            <li class="mb-2 d-flex justify-content-between"><span>🥉 3rd Place:</span> <strong>₦50k</strong></li>
+                            <li class="mb-0 d-flex justify-content-between"><span>🎭 Costume:</span> <strong>₦20k</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="col-lg-4">
+                 <div class="card h-100 border-0 shadow-sm p-4">
+                    <div class="card-body">
+                        <h3 class="h4 fw-bold mb-4 text-uppercase text-center" style="color: var(--primary-green);">🚀 How It Works</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3 d-flex">
+                                <span class="badge bg-success rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:30px; height:30px;">1</span>
+                                <div>
+                                    <strong>Online Prelims</strong>
+                                    <p class="small text-muted mb-0">Submit 1 video (1.5-3 mins). Public votes (30%) + Judges (70%).</p>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex">
+                                <span class="badge bg-success rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:30px; height:30px;">2</span>
+                                <div>
+                                    <strong>Top 5 Selection</strong>
+                                    <p class="small text-muted mb-0">The best 5 couples qualify for the Grand Finale.</p>
+                                </div>
+                            </li>
+                            <li class="d-flex">
+                                <span class="badge bg-warning text-dark rounded-circle me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width:30px; height:30px;">3</span>
+                                <div>
+                                    <strong>LIVE Finale (Abuja)</strong>
+                                    <p class="small text-muted mb-0">Perform LIVE at <strong>The Dons Yard</strong>. New routine required!</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rules -->
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm p-4 text-white" style="background: linear-gradient(135deg, #008751 0%, #006b3f 100%);">
+                    <div class="card-body">
+                        <h3 class="h4 fw-bold mb-4 text-uppercase text-center">📜 Rules</h3>
+                        <ul class="small mb-0 ps-3 opacity-90">
+                            <li class="mb-2"><strong>Eligibility:</strong> Couples 18-50 years old. Nigerian residents only.</li>
+                            <li class="mb-2"><strong>Style:</strong> Afrobeats, Hip-Hop, Ballroom, etc. (No explicit content).</li>
+                            <li class="mb-2"><strong>Video:</strong> 1080p min quality. Good lighting/sound.</li>
+                            <li class="mb-2"><strong>Conduct:</strong> Respect partners, judges, and audience.</li>
+                        </ul>
+                        <div class="mt-4 text-center">
+                            <span class="badge bg-warning text-dark rounded-pill px-3">#CouplesDanceComp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container" id="contestants">
+        <div class="text-center mb-5">
+            <form action="/" method="GET" class="mx-auto shadow-sm p-2 bg-white rounded-pill" style="max-width: 600px; border: 1px solid #eee;">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control border-0 rounded-pill ps-4" placeholder="Find a dancer..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                    
+                    <select name="sort" class="form-select border-0 bg-light" style="max-width: 150px;" onchange="this.form.submit()">
+                        <option value="most_voted" <%= (typeof currentSort !== 'undefined' && currentSort === 'most_voted') ? 'selected' : '' %>>Most Voted</option>
+                        <option value="newest" <%= (typeof currentSort !== 'undefined' && currentSort === 'newest') ? 'selected' : '' %>>Newest</option>
+                    </select>
+
+                    <button class="btn btn-primary rounded-pill px-4 m-1" type="submit">Search</button>
+                    <% if((typeof searchQuery !== 'undefined' && searchQuery) || (typeof currentSort !== 'undefined' && currentSort && currentSort !== 'most_voted')) { %>
+                        <a href="/" class="btn btn-secondary">Clear</a>
+                    <% } %>
+                </div>
+            </form>
+        </div>
+
+        <!-- Top 3 Contestants Section -->
+        <% if(contestants.length > 0 && currentPage === 1) { %>
+            <div class="row justify-content-center mb-5">
+                <div class="col-12 text-center mb-3">
+                    <h2 class="section-title">🏆 Top 3 Dancers</h2>
+                </div>
+                <% contestants.slice(0, 3).forEach(function(contestant, index) { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 border-0 shadow-lg" style="border: 2px solid var(--accent-gold) !important;">
+                            <div class="card-header bg-warning text-dark text-center fw-bold border-0">
+                                <% if(index === 0) { %> 🥇 1st Place <% } %>
+                                <% if(index === 1) { %> 🥈 2nd Place <% } %>
+                                <% if(index === 2) { %> 🥉 3rd Place <% } %>
+                            </div>
+                            <div class="ratio ratio-16x9">
+                                <video controls poster="/images/video-placeholder.jpg">
+                                    <source src="/uploads/<%= contestant.video_filename %>" type="video/mp4">
+                                </video>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title"><%= contestant.username %></h5>
+                                <h4 class="fw-bold"><%= contestant.total_votes %> Votes</h4>
+                                
+                                <form action="/pay" method="POST" class="mt-2">
+                                    <div class="mb-2">
+                                        <label class="form-label small text-muted">Enter Amount (₦100 = 1 Vote)</label>
+                                        <input type="number" name="amount" class="form-control" value="100" min="100" step="100" required>
+                                    </div>
+                                    <input type="hidden" name="purpose" value="vote">
+                                    <input type="hidden" name="contestant_id" value="<%= contestant.id %>">
+                                    <input type="hidden" name="email" value="<%= user ? user.email : '' %>">
+                                    <% if(user) { %>
+                                        <button type="submit" class="btn btn-success w-100 pay-btn">Pay & Vote</button>
+                                    <% } else { %>
+                                        <a href="/login" class="btn btn-outline-success w-100">Login to Vote</a>
+                                    <% } %>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+            <hr class="mb-5">
+        <% } %>
+
+        <div class="text-center">
+            <h2 class="section-title">All Contestants</h2>
+        </div>
+
+        <div class="row">
+            <% if(contestants.length === 0) { %>
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">No contestants have uploaded videos yet. Be the first!</div>
+                </div>
+            <% } %>
+
+            <% contestants.forEach(function(contestant) { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <!-- Video Player -->
+                        <div class="ratio ratio-16x9">
+                            <video controls poster="/images/video-placeholder.jpg">
+                                <source src="/uploads/<%= contestant.video_filename %>" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title"><%= contestant.username %></h5>
+                            <p class="text-muted small mb-2">Social: <strong><%= contestant.social_media_handle %></strong></p>
+                            <p class="card-text text-muted"><%= contestant.description %></p>
+                            
+                            <div class="mt-3">
+                                <div class="mb-2">
+                                    <span class="badge bg-dark p-2">Total Votes: <%= contestant.total_votes %></span>
+                                </div>
+                                
+                                <!-- Vote Button (Triggers Payment) -->
+                                <form action="/pay" method="POST">
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text">₦</span>
+                                        <input type="number" name="amount" class="form-control" value="100" min="100" step="100" placeholder="Amount">
+                                    </div>
+                                    <input type="hidden" name="purpose" value="vote">
+                                    <input type="hidden" name="contestant_id" value="<%= contestant.id %>">
+                                    <input type="hidden" name="email" value="<%= user ? user.email : '' %>">
+                                    
+                                    <% if(user) { %>
+                                        <button type="submit" class="btn btn-success w-100 pay-btn">Pay & Vote</button>
+                                    <% } else { %>
+                                        <a href="/login" class="btn btn-outline-success w-100">Login to Vote</a>
+                                    <% } %>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <!-- Pagination -->
+        <% if (totalPages > 1) { %>
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <% if (currentPage > 1) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/?page=<%= currentPage - 1 %>&search=<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>&sort=<%= typeof currentSort !== 'undefined' ? currentSort : '' %>">Previous</a>
+                        </li>
+                    <% } else { %>
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    <% } %>
+
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                            <a class="page-link" href="/?page=<%= i %>&search=<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>&sort=<%= typeof currentSort !== 'undefined' ? currentSort : '' %>"><%= i %></a>
+                        </li>
+                    <% } %>
+
+                    <% if (currentPage < totalPages) { %>
+                        <li class="page-item">
+                            <a class="page-link" href="/?page=<%= currentPage + 1 %>&search=<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>&sort=<%= typeof currentSort !== 'undefined' ? currentSort : '' %>">Next</a>
+                        </li>
+                    <% } else { %>
+                        <li class="page-item disabled"><span class="page-link">Next</span></li>
+                    <% } %>
+                </ul>
+            </nav>
+        <% } %>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-5 mt-5" style="border-top: 5px solid var(--primary-green);">
+        <div class="container">
+            <p class="mb-2">&copy; <%= new Date().getFullYear() %> Couple Dance. All Rights Reserved.</p>
+            <div>
+                <a href="#" class="text-white me-3 text-decoration-none">Facebook</a>
+                <a href="#" class="text-white me-3 text-decoration-none">Twitter</a>
+                <a href="#" class="text-white text-decoration-none">Instagram</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Payment Confirmation Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to pay <strong id="modalAmount" class="text-success"></strong> to vote for <strong id="modalContestant"></strong>.</p>
+                    <p>This will result in <strong id="modalVotes" class="text-primary"></strong> votes.</p>
+                    <p class="text-muted small">Proceed to payment gateway?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmPaymentBtn">Proceed to Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const payButtons = document.querySelectorAll('.pay-btn');
+            const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+            const confirmBtn = document.getElementById('confirmPaymentBtn');
+            let targetForm = null;
+
+            payButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    targetForm = this.closest('form');
+                    const amount = targetForm.querySelector('input[name="amount"]').value;
+                    const contestantName = this.closest('.card-body').querySelector('.card-title').innerText;
+
+                    document.getElementById('modalAmount').innerText = '₦' + parseInt(amount).toLocaleString();
+                    document.getElementById('modalContestant').innerText = contestantName;
+                    document.getElementById('modalVotes').innerText = Math.floor(amount / 100);
+                    
+                    modal.show();
+                });
+            });
+
+            confirmBtn.addEventListener('click', function() {
+                if (targetForm) targetForm.submit();
+            });
+        });
+    </script>
+</body>
+</html>

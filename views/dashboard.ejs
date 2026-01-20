@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Love in Motion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #421746;
+            --accent-color: #a98213;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #431948, #000000b3), url('/images/bg.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            height: 100%;
+        }
+        .card-header-custom {
+            background: linear-gradient(to right, #421746, #a98213);
+            color: white;
+            padding: 20px;
+            border-bottom: none;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #421746, #a98213);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2e0f31, #8a680f);
+        }
+        .table-custom th {
+            background-color: rgba(66, 23, 70, 0.05);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top mb-5">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="color: var(--primary-color);">
+                <img src="/images/logo.png" alt="Logo" height="40" class="me-2">
+                Dashboard
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="me-3 d-none d-md-block fw-bold text-muted"><%= user.username %></span>
+                <a href="/" class="btn btn-outline-dark btn-sm rounded-pill px-3 me-2">Home</a>
+                <a href="/logout" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row g-4">
+            <!-- Profile Section -->
+            <div class="col-md-4">
+                <div class="dashboard-card">
+                    <div class="card-body text-center p-4">
+                        <div class="position-relative d-inline-block mb-3">
+                            <% if (user.profile_pic) { %>
+                                <img src="/uploads/<%= user.profile_pic %>" class="rounded-circle shadow-sm" style="width: 120px; height: 120px; object-fit: cover; border: 4px solid white;">
+                            <% } else { %>
+                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto shadow-sm" style="width: 120px; height: 120px; font-size: 2rem; border: 4px solid white;">👤</div>
+                            <% } %>
+                        </div>
+                        <h4 class="fw-bold mb-1"><%= user.username %></h4>
+                        <p class="text-muted small mb-3"><%= user.email %></p>
+                        
+                        <form action="/upload-profile-pic" method="POST" enctype="multipart/form-data" class="mt-3">
+                            <label class="btn btn-sm btn-outline-secondary rounded-pill w-100 mb-2" style="cursor: pointer;">
+                                <span>📷 Change Photo</span>
+                                <input type="file" name="profile_pic" class="d-none" onchange="this.form.submit()">
+                            </label>
+                        </form>
+
+                        <div class="text-start mt-4 px-2">
+                            <div class="mb-3 border-bottom pb-2">
+                                <small class="text-muted fw-bold d-block">Phone Number</small>
+                                <span class="text-dark"><%= user.phone_number || 'Not set' %></span>
+                            </div>
+                            <div class="mb-3 border-bottom pb-2">
+                                <small class="text-muted fw-bold d-block">Social Media</small>
+                                <span class="text-dark"><%= user.social_media_handle || 'Not set' %></span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted fw-bold d-block">Referral Code</small>
+                                <div class="bg-light p-2 rounded text-center mt-1 border">
+                                    <span class="fw-bold text-dark"><%= user.referral_code %></span>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <small class="text-muted fw-bold d-block mb-2">Your Referrals (<%= referrals.length %>)</small>
+                                <% if(referrals.length > 0) { %>
+                                    <ul class="list-group list-group-flush small border rounded">
+                                        <% referrals.forEach(function(ref) { %>
+                                            <li class="list-group-item bg-transparent py-2"><%= ref.username %></li>
+                                        <% }); %>
+                                    </ul>
+                                <% } else { %>
+                                    <p class="text-muted small fst-italic">No referrals yet.</p>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-25">
+                        
+                        <div class="text-start">
+                            <p class="small text-muted mb-1">Status</p>
+                            <% if(isContestant) { %>
+                                <span class="badge bg-success rounded-pill px-3 py-2">Contestant Couple</span>
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2 ms-1">Paid</span>
+                            <% } else { %>
+                                <span class="badge bg-secondary rounded-pill px-3 py-2">Voter / Fan</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Section -->
+            <div class="col-md-8">
+                <% if (hasPaid && !isContestant) { %>
+                    <div class="dashboard-card text-center p-5 d-flex flex-column align-items-center justify-content-center">
+                        <div class="mb-3 display-4">🎉</div>
+                        <h2 class="fw-bold mb-3" style="color: var(--primary-color);">Payment Confirmed!</h2>
+                        <p class="lead text-muted mb-4">You have successfully paid the registration fee.<br>Please upload your performance video to complete your profile.</p>
+                        <a href="/upload-video" class="btn btn-success btn-lg px-5 shadow rounded-pill">Upload Video Now</a>
+                    </div>
+                <% } else if(isContestant) { %>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0" style="color: var(--primary-color);">Your Performance</h5>
+                    </div>
+                    
+                    <div class="dashboard-card mb-4 p-3">
+                        <div class="ratio ratio-16x9 rounded overflow-hidden mb-3 bg-dark">
+                            <video controls>
+                                <source src="/uploads/<%= contestant.video_filename %>" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <a href="/upload-video" class="btn btn-outline-primary rounded-pill shadow-sm me-2">🎥 Update</a>
+                            <form action="/delete-video" method="POST" class="d-inline" onsubmit="return confirm('Are you sure? This will delete your video and reset your votes.');"><button type="submit" class="btn btn-outline-danger rounded-pill shadow-sm">🗑️ Delete</button></form>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-number"><%= totalVotes %></div>
+                                <div class="text-muted fw-bold small text-uppercase">Total Votes</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-card">
+                                <div class="stat-number"><%= voters.length %></div>
+                                <div class="text-muted fw-bold small text-uppercase">Unique Voters</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header-custom">
+                            <h5 class="mb-0 fw-bold">Recent Voters</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-custom table-hover mb-0 align-middle">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="ps-4 py-3">Fan Name</th>
+                                            <th class="py-3">Votes Cast</th>
+                                            <th class="py-3">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if(voters.length === 0) { %>
+                                            <tr>
+                                                <td colspan="3" class="text-center py-4 text-muted">No votes yet. Share your profile!</td>
+                                            </tr>
+                                        <% } %>
+                                        <% voters.forEach(function(vote) { %>
+                                            <tr>
+                                                <td class="ps-4 fw-bold"><%= vote.username %></td>
+                                                <td><span class="badge bg-warning text-dark rounded-pill"><%= vote.number_of_votes %></span></td>
+                                                <td class="text-muted small"><%= new Date(vote.created_at).toLocaleDateString() %></td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="dashboard-card mb-4 p-4 border-start border-5 border-warning">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h4 class="fw-bold mb-2">Want to Compete?</h4>
+                                <p class="text-muted mb-0">Register as a couple, upload your video, and stand a chance to win ₦500k!</p>
+                            </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <form action="/pay" method="POST">
+                                    <input type="hidden" name="amount" value="<%= registrationFee %>">
+                                    <input type="hidden" name="purpose" value="registration">
+                                    <input type="hidden" name="email" value="<%= user.email %>">
+                                    <button type="submit" class="btn btn-primary shadow rounded-pill">Pay ₦<%= parseInt(registrationFee).toLocaleString() %></button>
+                                </form>
+                            </div>
+                            <% if (typeof pendingRef !== 'undefined' && pendingRef) { %>
+                                <div class="col-12 text-center mt-3 pt-3 border-top">
+                                    <p class="text-muted small mb-2">Already paid but it's not showing?</p>
+                                    <form action="/check-payment-status" method="POST">
+                                        <input type="hidden" name="reference" value="<%= pendingRef %>">
+                                        <button type="submit" class="btn btn-outline-warning btn-sm rounded-pill">Check Payment Status</button>
+                                    </form>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card h-100 d-flex align-items-center justify-content-center text-center p-5">
+                        <div>
+                            <h3 class="fw-bold mb-3" style="color: var(--primary-color);">Ready to Vote?</h3>
+                            <p class="text-muted mb-4">Head over to the homepage to watch performances and support your favorite couples!</p>
+                            <a href="/" class="btn btn-primary btn-lg px-5 shadow">Go to Homepage</a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
