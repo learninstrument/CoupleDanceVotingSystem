@@ -59,9 +59,9 @@ const upload = multer({ storage: storage });
 
 // Email Configuration
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: process.env.SMTP_PORT || 587,
+    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -188,7 +188,11 @@ app.post('/register', async (req, res) => {
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
-            if (error) console.log(error);
+            if (error) {
+                console.error("❌ Error sending registration email:", error);
+            } else {
+                console.log("✅ Registration email sent successfully:", info.response);
+            }
         });
 
         res.redirect('/verify');
@@ -308,7 +312,11 @@ app.post('/resend-code', (req, res) => {
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
-        if (error) console.log(error);
+        if (error) {
+            console.error("❌ Error resending code:", error);
+        } else {
+            console.log("✅ Resend code email sent successfully:", info.response);
+        }
         res.redirect('/verify?resent=true');
     });
 });
