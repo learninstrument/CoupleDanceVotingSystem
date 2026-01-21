@@ -44,7 +44,10 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-    if (err) throw err;
+    if (err) {
+        console.error("❌ Database Connection Failed:", err);
+        return;
+    }
     console.log('Connected to MySQL Database');
 
     // Create Settings Table if not exists
@@ -144,7 +147,11 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => res.render('login', { error: null }));
 app.get('/register', (req, res) => {
     db.query("SELECT setting_value FROM settings WHERE setting_key = 'registration_fee'", (err, results) => {
-        const registrationFee = results.length > 0 ? results[0].setting_value : '6000';
+        if (err) {
+            console.error("Error fetching settings:", err);
+            return res.render('register', { registrationFee: '6000', error: null });
+        }
+        const registrationFee = (results && results.length > 0) ? results[0].setting_value : '6000';
         res.render('register', { registrationFee, error: null });
     });
 });
