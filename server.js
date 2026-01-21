@@ -58,10 +58,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Email Configuration
+const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+const smtpPort = process.env.SMTP_PORT || 587;
+const isSecure = process.env.SMTP_SECURE === 'true' || smtpPort == 465;
+
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: process.env.SMTP_PORT || 587,
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+    host: smtpHost,
+    port: smtpPort,
+    secure: isSecure,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -70,6 +74,7 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false
     }
 });
+console.log(`📧 Email Config: Host=${smtpHost}, Port=${smtpPort}, Secure=${isSecure}`);
 
 // --- ROUTES ---
 
@@ -190,6 +195,7 @@ app.post('/register', async (req, res) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("❌ Error sending registration email:", error);
+                if (error.code === 'ESOCKET') console.error("💡 TIP: Antivirus (Avast/AVG) often blocks email on Localhost. Disable 'Mail Shield' or use Gmail.");
             } else {
                 console.log("✅ Registration email sent successfully:", info.response);
             }
@@ -319,6 +325,7 @@ app.post('/resend-code', (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error("❌ Error resending code:", error);
+            if (error.code === 'ESOCKET') console.error("💡 TIP: Antivirus (Avast/AVG) often blocks email on Localhost. Disable 'Mail Shield' or use Gmail.");
         } else {
             console.log("✅ Resend code email sent successfully:", info.response);
         }
