@@ -3,6 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 const multer = require('multer'); // For video uploads
 const axios = require('axios');
 const nodemailer = require('nodemailer');
@@ -17,12 +18,21 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
+app.set('trust proxy', 1); // Required for sessions to work correctly on cPanel/Whogohost
 
 // Session Setup
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME
+});
+
 app.use(session({
     secret: process.env.SESSION_SECRET,
+    store: sessionStore,
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false
 }));
 
 // Database Connection
