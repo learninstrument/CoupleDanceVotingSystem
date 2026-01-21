@@ -58,8 +58,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Email Configuration
-const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-const smtpPort = process.env.SMTP_PORT || 587;
+const emailUser = process.env.EMAIL_USER || '';
+const isLocalDomain = emailUser.includes('coupledance.com.ng');
+const smtpHost = process.env.SMTP_HOST || (isLocalDomain ? 'localhost' : 'smtp.gmail.com');
+const smtpPort = process.env.SMTP_PORT || (isLocalDomain ? 465 : 587);
 const isSecure = process.env.SMTP_SECURE === 'true' || smtpPort == 465;
 
 const transporter = nodemailer.createTransport({
@@ -195,7 +197,7 @@ app.post('/register', async (req, res) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("❌ Error sending registration email:", error);
-                if (error.code === 'ESOCKET') console.error("💡 TIP: Antivirus (Avast/AVG) often blocks email on Localhost. Disable 'Mail Shield' or use Gmail.");
+                if (error.code === 'ESOCKET') console.error("💡 TIP: If on Localhost, disable Antivirus. If on Hosting, set SMTP_HOST to 'localhost'.");
             } else {
                 console.log("✅ Registration email sent successfully:", info.response);
             }
@@ -325,7 +327,7 @@ app.post('/resend-code', (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             console.error("❌ Error resending code:", error);
-            if (error.code === 'ESOCKET') console.error("💡 TIP: Antivirus (Avast/AVG) often blocks email on Localhost. Disable 'Mail Shield' or use Gmail.");
+            if (error.code === 'ESOCKET') console.error("💡 TIP: If on Localhost, disable Antivirus. If on Hosting, set SMTP_HOST to 'localhost'.");
         } else {
             console.log("✅ Resend code email sent successfully:", info.response);
         }
